@@ -178,6 +178,13 @@
 
     setSubmitting(true);
 
+    // Browser autofill / password managers sometimes fill the hidden
+    // honeypot field even though it's off-screen and non-focusable, which
+    // trips Formspree's spam check for genuine users. Clear it right before
+    // sending — real bots that skip this script entirely are unaffected.
+    var honeypotField = form.querySelector('[name="_gotcha"]');
+    if (honeypotField) honeypotField.value = '';
+
     var formData = new FormData(form);
 
     fetch(form.action, {
